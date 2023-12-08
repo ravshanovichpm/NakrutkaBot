@@ -9,13 +9,17 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from keyboards.defaults.instagram import instagram_paket
 from instagpy import InstaGPy
-
+#.env import
+from dotenv import load_dotenv
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 from keyboards.inlines.accses import true_false, follow_button, like_button, view_button, comment_button, \
     payment_button, tolov_tasdiqlash
 
-API_TOKEN = ''
+load_dotenv()
+import os
+ADMIN = os.getenv("ADMIN_ID")
+API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
 bot = Bot(token=API_TOKEN, parse_mode="HTML")
 dp = Dispatcher(bot, storage=MemoryStorage())
@@ -39,8 +43,21 @@ class Shogirdchalar(StatesGroup):
     views_state = State()
     comment_state = State()
     file_state = State()
+    admin_state = State()
+    full_acsess = State()
+    not_full_acsess = State()
+
+@dp.message_handler(commands='admin')
+async def admin(message: types.Message, state: FSMContext):
+    await message.answer("Admin parolini kiriting")
+    await Shogirdchalar.admin_state.set()
 
 
+@dp.message_handler(state=Shogirdchalar.admin_state)
+async def admin(message: types.Message, state: FSMContext):
+    if message.text == "admin1":
+        await message.answer("Siz State da siz")
+        await Shogirdchalar.full_acsess.set()
 @dp.message_handler(commands='start')
 async def for_start(message: types.Message, state: FSMContext):
     son[message.from_user.id] = 0
@@ -158,7 +175,7 @@ async def update_snecks_minus_follow_button1(chat_id, message_id, new_son):
 @dp.callback_query_handler(text='follow_tasdiqlash')
 async def tasdiq_followers(call: types.CallbackQuery):
     instagram_nomi = user_instagram[f"{call.message.chat.id}"]
-    await bot.send_message(6596589901,
+    await bot.send_message(ADMIN,
                            f"Yangi Zakaz keldi\nBuyurtmachi: {call.from_user.username}\nTanlov Turi: Obunachi\nSoni: {son[call.message.chat.id]}\nInstagram: https://instagram.com/{instagram_nomi}")
     await call.message.answer("To`lov turini tanlang!", reply_markup=payment_button)
 
@@ -259,7 +276,7 @@ async def plus_like(call: types.CallbackQuery):
 @dp.callback_query_handler(text='like_tasdiqlash')
 async def tasdiq_likes(call: types.CallbackQuery):
     instagram_nomi = user_instagram[str(call.message.chat.id)]
-    await bot.send_message(6596589901,
+    await bot.send_message(ADMIN,
                            f"Yangi Zakaz keldi\nBuyurtmachi: {call.from_user.username}\nTanlov Turi: Like\nSoni: {son[call.message.chat.id]}\nInstagram: {instagram_nomi}")
     await call.message.answer("To`lov turini tanlang!", reply_markup=payment_button)
 
@@ -354,11 +371,10 @@ async def plus_view(call: types.CallbackQuery):
     else:
         await call.answer('Eng kam miqdor 1000 ta')
 
-
 @dp.callback_query_handler(text='view_tasdiqlash')
 async def tasdiq_view(call: types.CallbackQuery):
     instagram_nomi = user_instagram[f"{call.message.chat.id}"]
-    await bot.send_message(6596589901,
+    await bot.send_message(ADMIN,
                            f"Yangi Zakaz keldi\nBuyurtmachi: {call.from_user.username}\nTanlov Turi: View\nSoni: {son[call.message.chat.id]}\nInstagram: {instagram_nomi}")
     await call.message.answer("To`lov turini tanlang!", reply_markup=payment_button)
 
@@ -422,7 +438,6 @@ async def minus_comment(call: types.CallbackQuery, state: FSMContext):
         else:
             await call.answer('Eng kam miqdor 1000 ta')
 
-
 #
 @dp.callback_query_handler(text='comment+')
 async def plus_comment(call: types.CallbackQuery):
@@ -453,11 +468,10 @@ async def plus_comment(call: types.CallbackQuery):
     else:
         await call.answer('Eng kam miqdor 1000 ta')
 
-
 @dp.callback_query_handler(text='comment_tasdiqlash')
 async def tasdiq_comment(call: types.CallbackQuery):
     instagram_nomi = user_instagram[f"{call.message.chat.id}"]
-    await bot.send_message(6596589901,
+    await bot.send_message(ADMIN,
                            f"Yangi Zakaz keldi\nBuyurtmachi: {call.from_user.username}\nTanlov Turi: Comment\nSoni: {son[call.message.chat.id]}\nInstagram:{instagram_nomi}")
     await call.message.answer("To`lov turini tanlang!", reply_markup=payment_button)
 
@@ -466,7 +480,7 @@ async def tasdiq_comment(call: types.CallbackQuery):
 async def click(call: types.CallbackQuery, state: FSMContext):
     narx = son[call.message.chat.id]
     await call.message.answer(
-        f"""Bu karta raqamiga {son[call.message.chat.id]}so'm tashlang:  <code>3452872164901084</code>""")
+        f"""Bu karta raqamiga <b>{int(son[call.message.chat.id])*15}</b> so'm tashlang\n💳Karta raqam: <code>3452872164901084</code>""")
     await call.message.answer("To`lov Chekini Tashlang")
     await Shogirdchalar.file_state.set()
 
@@ -479,15 +493,22 @@ async def payme(call: types.CallbackQuery, state: FSMContext):
     await call.message.answer("To`lov Chekini Tashlang")
     await Shogirdchalar.file_state.set()
 
+from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
-#fgf
 @dp.message_handler(state=Shogirdchalar.file_state, content_types=types.ContentTypes.PHOTO)
 async def check_send_to_admin(message: Message, state: FSMContext):
     file = message.photo
+    tolamoqchi.append(message.from_user.id)
     print(file[0])
-    await bot.send_photo(6596589901, file[0]['file_id'], reply_markup=tolov_tasdiqlash)
+    await bot.send_photo(ADMIN, file[0]['file_id'],caption= f"User id si {message.from_user.id}", reply_markup=tolov_tasdiqlash)
+    #add button for addmin list of tolamoqchi
+    button = ReplyKeyboardMarkup(resize_keyboard=True)
+    for i in range(len(tolamoqchi)):
+        button.add(str(tolamoqchi[i]))
+    await bot.send_message(ADMIN, "Tolamoqchi listi", reply_markup=button)
     await state.finish()
-
+#tolamoqchi bolganlarni hammasini bir joga yog`ish kerak
+tolamoqchi = []
 
 @dp.callback_query_handler(text='Tolandi')
 async def tolov(call: types.CallbackQuery):
@@ -499,5 +520,21 @@ async def tolov_tasdiqlanmadi(call: types.CallbackQuery):
     await call.message.answer("Tolov muvaffaqiyatli amalga oshirilmadi")
 
 
+@dp.message_handler(state=Shogirdchalar.full_acsess)
+async def admin(message: Message):
+    await message.answer("Siz Tolandi State da siz")
+    if message.text == "tolanmadi":
+        await Shogirdchalar.not_full_acsess.set()
+    id = message.text
+    await bot.send_message(id,"Sizning to`lovingiz tasdiqlandi yaqin orada buyurtmangiz amalga oshiriladi tel: +998 99 999 99 99")
+
+@dp.message_handler(state=Shogirdchalar.not_full_acsess)
+async def admin(message: Message):
+    await message.answer("Siz Tolanmadi State da siz")
+    if message.text == "tolandi":
+        await Shogirdchalar.full_acsess.set()
+    id = message.text
+    await bot.send_message(id,"Sizning to`lovingiz tasdiqlanmadi!")
+#
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)

@@ -1,2 +1,7 @@
 #ignore .env file
 .env
+.test.py
+.venv_nakrutka
+venv_nakrutka
+test.py
+

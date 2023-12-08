@@ -71,8 +71,8 @@ comment_button = InlineKeyboardMarkup(
 payment_button = InlineKeyboardMarkup(
     inline_keyboard=[
         [
-            InlineKeyboardButton(text='Click', callback_data='Click'),
-            InlineKeyboardButton(text='Payme', callback_data='Payme')
+            InlineKeyboardButton(text='Check Jo`natish', callback_data='Click'),
+
         ]
     ],
     resize_keyboard=True,
