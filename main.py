@@ -12,7 +12,8 @@ from instagpy import InstaGPy
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
-from keyboards.inlines.accses import true_false, follow_button, like_button, view_button, comment_button
+from keyboards.inlines.accses import true_false, follow_button, like_button, view_button, comment_button, \
+    payment_button, tolov_tasdiqlash
 
 API_TOKEN = ''
 
@@ -37,6 +38,7 @@ class Shogirdchalar(StatesGroup):
     url_like_state = State()
     views_state = State()
     comment_state = State()
+    file_state = State()
 
 
 @dp.message_handler(commands='start')
@@ -158,7 +160,7 @@ async def tasdiq_followers(call: types.CallbackQuery):
     instagram_nomi = user_instagram[f"{call.message.chat.id}"]
     await bot.send_message(6596589901,
                            f"Yangi Zakaz keldi\nBuyurtmachi: {call.from_user.username}\nTanlov Turi: Obunachi\nSoni: {son[call.message.chat.id]}\nInstagram: https://instagram.com/{instagram_nomi}")
-    await call.message.answer("To`lov turini tanlang!")
+    await call.message.answer("To`lov turini tanlang!", reply_markup=payment_button)
 
 
 # _____________________________________FOWLLOW_END_____________________________
@@ -259,7 +261,7 @@ async def tasdiq_likes(call: types.CallbackQuery):
     instagram_nomi = user_instagram[str(call.message.chat.id)]
     await bot.send_message(6596589901,
                            f"Yangi Zakaz keldi\nBuyurtmachi: {call.from_user.username}\nTanlov Turi: Like\nSoni: {son[call.message.chat.id]}\nInstagram: {instagram_nomi}")
-    await call.message.answer("To`lov turini tanlang!")
+    await call.message.answer("To`lov turini tanlang!", reply_markup=payment_button)
 
 
 # -------------------------LIKE_end-------------------------------------
@@ -352,12 +354,15 @@ async def plus_view(call: types.CallbackQuery):
     else:
         await call.answer('Eng kam miqdor 1000 ta')
 
+
 @dp.callback_query_handler(text='view_tasdiqlash')
 async def tasdiq_view(call: types.CallbackQuery):
     instagram_nomi = user_instagram[f"{call.message.chat.id}"]
     await bot.send_message(6596589901,
                            f"Yangi Zakaz keldi\nBuyurtmachi: {call.from_user.username}\nTanlov Turi: View\nSoni: {son[call.message.chat.id]}\nInstagram: {instagram_nomi}")
-    await call.message.answer("To`lov turini tanlang!")
+    await call.message.answer("To`lov turini tanlang!", reply_markup=payment_button)
+
+
 # ------------------------------------------VIEW_end-------------------------------------------------------
 
 
@@ -417,6 +422,7 @@ async def minus_comment(call: types.CallbackQuery, state: FSMContext):
         else:
             await call.answer('Eng kam miqdor 1000 ta')
 
+
 #
 @dp.callback_query_handler(text='comment+')
 async def plus_comment(call: types.CallbackQuery):
@@ -447,11 +453,51 @@ async def plus_comment(call: types.CallbackQuery):
     else:
         await call.answer('Eng kam miqdor 1000 ta')
 
+
 @dp.callback_query_handler(text='comment_tasdiqlash')
 async def tasdiq_comment(call: types.CallbackQuery):
     instagram_nomi = user_instagram[f"{call.message.chat.id}"]
     await bot.send_message(6596589901,
                            f"Yangi Zakaz keldi\nBuyurtmachi: {call.from_user.username}\nTanlov Turi: Comment\nSoni: {son[call.message.chat.id]}\nInstagram:{instagram_nomi}")
-    await call.message.answer("To`lov turini tanlang!")
+    await call.message.answer("To`lov turini tanlang!", reply_markup=payment_button)
+
+
+@dp.callback_query_handler(text="Click")
+async def click(call: types.CallbackQuery, state: FSMContext):
+    narx = son[call.message.chat.id]
+    await call.message.answer(
+        f"""Bu karta raqamiga {son[call.message.chat.id]}so'm tashlang:  <code>3452872164901084</code>""")
+    await call.message.answer("To`lov Chekini Tashlang")
+    await Shogirdchalar.file_state.set()
+
+
+@dp.callback_query_handler(text="Payme")
+async def payme(call: types.CallbackQuery, state: FSMContext):
+    narx = son[call.message.chat.id]
+    await call.message.answer(
+        f"""Bu karta raqamiga {son[call.message.chat.id]}so'm tashlang:  <code>3452872164901084</code>""")
+    await call.message.answer("To`lov Chekini Tashlang")
+    await Shogirdchalar.file_state.set()
+
+
+#fgf
+@dp.message_handler(state=Shogirdchalar.file_state, content_types=types.ContentTypes.PHOTO)
+async def check_send_to_admin(message: Message, state: FSMContext):
+    file = message.photo
+    print(file[0])
+    await bot.send_photo(6596589901, file[0]['file_id'], reply_markup=tolov_tasdiqlash)
+    await state.finish()
+
+
+@dp.callback_query_handler(text='Tolandi')
+async def tolov(call: types.CallbackQuery):
+    await call.message.answer("Tolov muvaffaqiyatli amalga oshirildi")
+
+
+@dp.callback_query_handler(text='Tolanmadi')
+async def tolov_tasdiqlanmadi(call: types.CallbackQuery):
+    await call.message.answer("Tolov muvaffaqiyatli amalga oshirilmadi")
+
+
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
