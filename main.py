@@ -535,5 +535,6 @@ async def admin(message: Message):
         await Shogirdchalar.full_acsess.set()
     id = message.text
     await bot.send_message(id,"Sizning to`lovingiz tasdiqlanmadi!")
+#
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
