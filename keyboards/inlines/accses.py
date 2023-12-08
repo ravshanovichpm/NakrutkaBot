@@ -1,24 +1,24 @@
-from aiogram.types import InlineKeyboardMarkup,InlineKeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 true_false = InlineKeyboardMarkup(
     inline_keyboard=[
         [
-            InlineKeyboardButton(text="Ha✅",callback_data="ha"),
-            InlineKeyboardButton(text="Yoq❌",callback_data="yoq")
+            InlineKeyboardButton(text="Ha✅", callback_data="ha"),
+            InlineKeyboardButton(text="Yoq❌", callback_data="yoq")
         ]
     ]
 )
 follow_button = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton('-1000👤', callback_data='minus_follow'),
-                InlineKeyboardButton(f'0', callback_data='0'),
-                InlineKeyboardButton('+1000👤', callback_data='plus_follow')
-            ],
-            [
-                InlineKeyboardButton('Tasdiqlash✅', callback_data='follow_tasdiqlash')
-            ]
-        ])
+    inline_keyboard=[
+        [
+            InlineKeyboardButton('-1000👤', callback_data='minus_follow'),
+            InlineKeyboardButton(f'0', callback_data='0'),
+            InlineKeyboardButton('+1000👤', callback_data='plus_follow')
+        ],
+        [
+            InlineKeyboardButton('Tasdiqlash✅', callback_data='follow_tasdiqlash')
+        ]
+    ])
 
 like_button = InlineKeyboardMarkup(
     inline_keyboard=[
@@ -36,7 +36,6 @@ like_button = InlineKeyboardMarkup(
     resize_keyboard=True,
 )
 
-
 view_button = InlineKeyboardMarkup(
     inline_keyboard=[
         [
@@ -53,7 +52,6 @@ view_button = InlineKeyboardMarkup(
     resize_keyboard=True,
 )
 
-
 comment_button = InlineKeyboardMarkup(
     inline_keyboard=[
         [
@@ -65,6 +63,25 @@ comment_button = InlineKeyboardMarkup(
         ],
         [
             InlineKeyboardButton(text='Tasdiqlash✅', callback_data='comment_tasdiqlash')
+        ]
+    ],
+    resize_keyboard=True,
+)
+
+payment_button = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(text='Click', callback_data='Click'),
+            InlineKeyboardButton(text='Payme', callback_data='Payme')
+        ]
+    ],
+    resize_keyboard=True,
+)
+tolov_tasdiqlash = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(text='Tolandi', callback_data='Tolandi'),
+            InlineKeyboardButton(text='Tolanmadi', callback_data='Tolanmadi')
         ]
     ],
     resize_keyboard=True,
