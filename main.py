@@ -480,7 +480,7 @@ async def payme(call: types.CallbackQuery, state: FSMContext):
     await Shogirdchalar.file_state.set()
 
 
-#
+#fgf
 @dp.message_handler(state=Shogirdchalar.file_state, content_types=types.ContentTypes.PHOTO)
 async def check_send_to_admin(message: Message, state: FSMContext):
     file = message.photo
